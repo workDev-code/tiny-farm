@@ -17,3 +17,7 @@ Thumbs.db
 
 # Backup file
 *.bak
+
+# Asset pack tải từ internet — KHÔNG commit (license cấm redistribute)
+# Xem docs/assets.md để tải lại
+assets/packs/

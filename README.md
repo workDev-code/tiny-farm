@@ -10,6 +10,7 @@ Game Idle/Farming 2D viết bằng **Godot 4.6** + **GDScript**.
 | [`docs/architecture.md`](docs/architecture.md) | Cấu trúc scene, node, script và luồng dữ liệu |
 | [`docs/gameplay.md`](docs/gameplay.md) | Vòng lặp gameplay, cân bằng kinh tế, công thức cây trồng |
 | [`docs/known_issues.md`](docs/known_issues.md) | Lỗi đã biết và hạn chế tạm thời |
+| [`docs/assets.md`](docs/assets.md) | Nguồn, license và cách cài asset bên thứ ba |
 
 ## Chạy game
 
@@ -17,10 +18,15 @@ Game Idle/Farming 2D viết bằng **Godot 4.6** + **GDScript**.
 # Mở trong editor
 godot --path .
 
-# Chạy thẳng (không mở editor)
-godot --path . 
+# Chạy thẳng, không mở editor
+godot --path .
 ```
+
+## Asset bên thứ ba
+
+Asset pack **không** được commit vào repo (license cấm redistribute trên repo public).
+Clone repo rồi làm theo [`docs/assets.md`](docs/assets.md) để tải và đặt asset vào `assets/packs/`.
 
 ## Export
 
-Bấn **Project → Export** trong editor, chọn preset Linux, xuất ra `build/`.
+Bấm **Project → Export** trong editor, chọn preset Linux, xuất ra `build/`.
