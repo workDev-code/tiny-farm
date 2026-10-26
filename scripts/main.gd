@@ -2,14 +2,11 @@ extends Node2D
 
 ## Scene gốc của game — nối các phần của game lại với nhau.
 ##
-## Phase 2: lưới 9 ô đất, mỗi ô tự trồng cây, cây lớn theo thời gian và thu hoạch được.
+## Main đóng vai trò điều phối: nhận tín hiệu từ ô đất, hỏi `GameManager` lấy hạt giống,
+## rồi bảo ô đất trồng. Main không tự lưu tiền hay hạt giống.
 
+@onready var ui: GameUI = $UI
 @onready var plots: Node2D = $Farm/Plots
-@onready var status_label: Label = $UI/Status
-@onready var inventory_label: Label = $UI/Inventory
-
-## Số cây đã thu hoạch được. Phase 3 sẽ thay bằng kho hàng thật.
-var inventory: int = 0
 
 
 func _ready() -> void:
@@ -18,38 +15,51 @@ func _ready() -> void:
 	for child in plots.get_children():
 		var plot := child as CropPlot
 		plot.state_changed.connect(_on_plot_state_changed.bind(plot))
+		plot.plant_requested.connect(_on_plot_plant_requested)
 		plot.harvested.connect(_on_plot_harvested)
 
-	_update_status(CropPlot.State.PLAIN)
-	_update_inventory()
+	ui.set_status("Ô đất: trống — bấm chuột trái để cày")
 
 
 func _on_plot_state_changed(state: int, plot: CropPlot) -> void:
-	_update_status(state, plot)
+	ui.set_status(_status_text(state, plot))
 
 
-func _on_plot_harvested(_crop_id: int) -> void:
-	inventory += 1
-	_update_inventory()
+## Người chơi bấm vào ô đất đã cày: cần lấy 1 hạt giống đang chọn để trồng.
+func _on_plot_plant_requested(plot: CropPlot) -> void:
+	var crop := GameManager.take_selected_seed()
+	if crop == null:
+		# GameManager đã phát thông báo lý do lên UI.
+		return
+
+	plot.plant(crop, GameManager.growth_speed)
+	ui.set_status("%s: vừa gieo hạt %s — đang nảy mầm…" % [_plot_label(plot), crop.display_name])
 
 
-func _update_status(state: int, plot: CropPlot = null) -> void:
-	# Tên ô đất để người chơi biết đang thao tác lên ô nào.
-	var where := "Ô đất" if plot == null else "Ô đất %s" % plot.name.trim_prefix("Plot_")
+func _on_plot_harvested(crop_id: int) -> void:
+	var crop := GameManager.get_crop(crop_id)
+	GameManager.add_produce(crop_id)
+	if crop != null:
+		ui.set_status("Đã thu hoạch 1 %s — vào kho, nhớ bán đi" % crop.display_name)
+
+
+func _status_text(state: int, plot: CropPlot) -> String:
+	var where := _plot_label(plot)
 	match state:
 		CropPlot.State.PLAIN:
-			status_label.text = "%s: trống — bấm chuột trái để cày" % where
+			return "%s: trống — bấm chuột trái để cày" % where
 		CropPlot.State.TILLED:
-			status_label.text = "%s: đã cày — bấm chuột trái để gieo hạt" % where
+			return "%s: đã cày — bấm chuột trái để gieo hạt" % where
 		CropPlot.State.SEED:
-			status_label.text = "%s: vừa gieo hạt — đang nảy mầm…" % where
+			return "%s: vừa gieo hạt — đang nảy mầm…" % where
 		CropPlot.State.SPROUT:
-			status_label.text = "%s: cây đang nảy mầm…" % where
+			return "%s: cây đang nảy mầm…" % where
 		CropPlot.State.GROWING:
-			status_label.text = "%s: cây đang lớn…" % where
+			return "%s: cây đang lớn…" % where
 		CropPlot.State.MATURE:
-			status_label.text = "%s: cây chín rồi — bấm chuột trái để thu hoạch" % where
+			return "%s: cây chín rồi — bấm chuột trái để thu hoạch" % where
+	return where
 
 
-func _update_inventory() -> void:
-	inventory_label.text = "Đã thu hoạch: %d cà rốt" % inventory
+func _plot_label(plot: CropPlot) -> String:
+	return "Ô đất %s" % plot.name.trim_prefix("Plot_")

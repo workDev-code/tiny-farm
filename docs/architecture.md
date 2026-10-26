@@ -29,7 +29,7 @@ tiny-farm/
 | `Shop` | Xử lý mua hạt giống, bán nông sản và nâng cấp |
 | `SaveManager` | Lưu và tải dữ liệu bằng JSON |
 
-## Scene hiện tại (Phase 2)
+## Scene hiện tại (Phase 03)
 
 ```
 Main (Node2D)              scripts/main.gd
@@ -38,24 +38,32 @@ Main (Node2D)              scripts/main.gd
 │   └── Plots (Node2D)
 │       ├── Plot_1 … Plot_9   ← 9 instance của CropPlot.tscn
 │       └── ...
-└── UI (CanvasLayer)
-    ├── Status (Label)     Dòng thông báo trạng thái ô đất vừa thao tác
-    └── Inventory (Label)  Số cây đã thu hoạch
+└── UI                      ← instance của UI.tscn
+    ├── Money (Label)
+    ├── Status (Label)
+    ├── Hint (Label)
+    ├── Inventory (Label)
+    ├── BtnSell (Button)
+    ├── BtnUpgrade (Button)
+    ├── BtnCarrot / BtnBuyCarrot (SeedButton)
+    └── BtnCorn / BtnBuyCorn (SeedButton)
 ```
 
-### Lưới 9 ô đất
+`GameManager` **không nằm trong scene** — nó là Autoload (xem `project.godot`),
+nên gọi được `GameManager.money` từ bất kỳ script nào.
 
-`Farm.tscn` chứa 9 instance của `CropPlot.tscn`, xếp lưới 3×3.
-Vị trí tính theo ô 64×64 px trên màn hình (16px tile × scale 4), cách nhau 8px:
+### Các lớp dữ liệu
 
-| | x = 248 | x = 320 | x = 392 |
-| --- | --- | --- | --- |
-| **y = 108** | Plot_1 | Plot_2 | Plot_3 |
-| **y = 180** | Plot_4 | Plot_5 | Plot_6 |
-| **y = 252** | Plot_7 | Plot_8 | Plot_9 |
-
-Texture được đặt **mặc định trong `CropPlot.tscn`**, nên mỗi instance chỉ cần khai báo `position`.
-Muốn ô nào dùng cây khác thì override `stage_textures` của riêng instance đó.
+```
+CropData (Resource)   resources/crops/*.tres
+└── id, display_name, seed_price, sell_price, grow_time, stage_textures[]
+        │
+        │  GameManager giữ mảng các CropData, đánh chỉ số theo id
+        ▼
+GameManager (Autoload)
+├── money, seeds[], produce[], selected_crop_id, growth_speed
+└── buy_seed / select_crop / take_selected_seed / add_produce / sell_all / buy_upgrade
+```
 
 ### `scenes/CropPlot.tscn` — scene tái sử dụng
 
@@ -118,6 +126,10 @@ Người chơi thu hoạch
 | `class_name CropPlot` | Gọi được `CropPlot.State.PLAIN` từ mọi script |
 | `GrowTimer` nằm trong `CropPlot.tscn` | Mỗi ô lớn độc lập, không cần Main quản lý N timer |
 | `main.gd` duyệt `Farm/Plots` để nối signal | Thêm ô mới chỉ cần thêm instance, không sửa code |
+| `CropData` là Resource, mỗi cây là 1 file `.tres` | Thêm loại cây mới = thêm file, không sửa code. UI đọc giá/thời gian từ data |
+| `GameManager` là Autoload, không đặt trong scene | Mọi script đều gọi được `GameManager.xxx` mà không phải truyền reference |
+| Script `game_manager.gd` **không** có `class_name` | `class_name GameManager` sẽ trùng tên với autoload và gây lỗi parse |
+| Ô đất gửi `plant_requested`, `main.gd` hỏi GameManager rồi mới trồng | Ô đất không cần biết GameManager tồn tại |
 | `signal.bind(plot)` để biết ô nào đổi | Signal gốc chỉ mang `state`; bind gắn thêm ô đất làm tham số |
 
 ## Quyết định thiết kế

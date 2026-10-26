@@ -1,0 +1,99 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui.gd" id="1_ui"]
+[ext_resource type="Script" path="res://scripts/seed_button.gd" id="2_btn"]
+
+[node name="UI" type="CanvasLayer"]
+script = ExtResource("1_ui")
+
+[node name="Money" type="Label" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 240.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 8
+text = "Tiền: 100 xu"
+
+[node name="Status" type="Label" parent="."]
+offset_left = 8.0
+offset_top = 24.0
+offset_right = 460.0
+offset_bottom = 40.0
+theme_override_font_sizes/font_size = 8
+text = "Ô đất: trống — bấm chuột trái để cày"
+
+[node name="Hint" type="Label" parent="."]
+offset_left = 8.0
+offset_top = 40.0
+offset_right = 460.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 8
+text = "Mua hạt giống ở thanh dưới, chọn loại, rồi bấm vào ô đất đã cày"
+
+[node name="Inventory" type="Label" parent="."]
+offset_left = 8.0
+offset_top = 56.0
+offset_right = 460.0
+offset_bottom = 72.0
+theme_override_font_sizes/font_size = 8
+text = "Kho: trống"
+
+[node name="BtnSell" type="Button" parent="."]
+offset_left = 470.0
+offset_top = 8.0
+offset_right = 632.0
+offset_bottom = 28.0
+theme_override_font_sizes/font_size = 8
+text = "Bán hàng (+0 xu)"
+
+[node name="BtnUpgrade" type="Button" parent="."]
+offset_left = 470.0
+offset_top = 32.0
+offset_right = 632.0
+offset_bottom = 52.0
+theme_override_font_sizes/font_size = 8
+text = "Nâng cấp (100 xu)"
+
+[node name="BtnCarrot" type="Button" parent="."]
+script = ExtResource("2_btn")
+offset_left = 8.0
+offset_top = 320.0
+offset_right = 88.0
+offset_bottom = 340.0
+theme_override_font_sizes/font_size = 8
+text = "Cà rốt ×0"
+crop_id = 0
+action = "select"
+
+[node name="BtnBuyCarrot" type="Button" parent="."]
+script = ExtResource("2_btn")
+offset_left = 90.0
+offset_top = 320.0
+offset_right = 134.0
+offset_bottom = 340.0
+theme_override_font_sizes/font_size = 8
+text = "+10 xu"
+crop_id = 0
+action = "buy"
+
+[node name="BtnCorn" type="Button" parent="."]
+script = ExtResource("2_btn")
+offset_left = 138.0
+offset_top = 320.0
+offset_right = 206.0
+offset_bottom = 340.0
+theme_override_font_sizes/font_size = 8
+text = "Ngô ×0"
+crop_id = 1
+action = "select"
+
+[node name="BtnBuyCorn" type="Button" parent="."]
+script = ExtResource("2_btn")
+offset_left = 208.0
+offset_top = 320.0
+offset_right = 252.0
+offset_bottom = 340.0
+theme_override_font_sizes/font_size = 8
+text = "+25 xu"
+crop_id = 1
+action = "buy"

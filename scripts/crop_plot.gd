@@ -3,7 +3,8 @@ extends Area2D
 
 ## Một ô đất trong nông trại.
 ##
-## Phase 2: ô đất biết cày, gieo hạt, cây lớn dần theo thời gian và thu hoạch.
+## Ô đất biết cày, gieo hạt, cây lớn dần theo thời gian và thu hoạch.
+## Loại cây trồng và thời gian lớn lấy từ `CropData`.
 
 ## Trạng thái của một ô đất.
 enum State {
@@ -15,7 +16,7 @@ enum State {
 	MATURE,  ## Đã chín, sẵn sàng thu hoạch
 }
 
-## Ánh xạ trạng thái -> vị trí trong stage_textures.
+## Ánh xạ trạng thái -> vị trí trong danh sách texture của cây.
 const STAGE_INDEX := {
 	State.SEED: 0,
 	State.SPROUT: 1,
@@ -23,32 +24,26 @@ const STAGE_INDEX := {
 	State.MATURE: 3,
 }
 
-## Loại cây trồng. Phase 2 mới chỉ có cà rốt.
-enum Crop {
-	CARROT,
-}
-
 ## Phát ra mỗi khi trạng thái ô đất thay đổi.
 signal state_changed(state: State)
 
+## Phát ra khi người chơi bấm vào ô đất đã cày, cần gieo hạt.
+signal plant_requested(plot: CropPlot)
+
 ## Phát ra khi người chơi thu hoạch được một cây.
-signal harvested(crop_id: Crop)
+signal harvested(crop_id: int)
 
 ## Hình ảnh khi ô đất trống.
 @export var plain_texture: Texture2D
 ## Hình ảnh khi ô đất đã cày.
 @export var tilled_texture: Texture2D
-## Hình ảnh từng giai đoạn cây: [mầm, nảy mầm, lớn, chín].
-@export var stage_textures: Array[Texture2D] = []
-## Thời gian mỗi giai đoạn cây trồng (giây).
-@export var grow_time_per_stage: float = 2.0
 
 @onready var soil_sprite: Sprite2D = $Soil
 @onready var crop_sprite: Sprite2D = $Crop
 @onready var grow_timer: Timer = $GrowTimer
 
-## Loại cây đang trồng trong ô này.
-var crop_id: Crop = Crop.CARROT
+## Loại cây đang trồng. Null khi ô đất trống.
+var crop: CropData = null
 var state: State = State.PLAIN
 
 
@@ -59,10 +54,16 @@ func _ready() -> void:
 	mouse_exited.connect(_on_mouse_exited)
 	grow_timer.timeout.connect(_on_timer_timeout)
 
-	# Thời gian mỗi giai đoạn lấy từ biến export, không cần sửa trong Inspector.
-	grow_timer.wait_time = grow_time_per_stage
-
 	_update_sprite()
+
+
+## Trồng một loại cây lên ô đất.
+## `speed` là hệ số tốc độ mọc (>1 = nhanh hơn).
+func plant(new_crop: CropData, speed: float = 1.0) -> void:
+	crop = new_crop
+	grow_timer.wait_time = crop.time_per_stage() / maxf(speed, 0.01)
+	_set_state(State.SEED)
+	grow_timer.start()
 
 
 ## Xử lý khi người chơi bấm vào ô đất. Việc làm phụ thuộc vào trạng thái hiện tại.
@@ -71,22 +72,19 @@ func interact() -> void:
 		State.PLAIN:
 			_set_state(State.TILLED)
 		State.TILLED:
-			_plant()
+			# Ô đất đã cày: cần hạt giống. main.gd sẽ xử lý.
+			plant_requested.emit(self)
 		State.MATURE:
 			_harvest()
 		_:
 			pass # Đang lớn thì chưa làm được gì.
 
 
-## Gieo hạt và bắt đầu đếm thời gian cây lớn.
-func _plant() -> void:
-	_set_state(State.SEED)
-	grow_timer.start()
-
-
 ## Thu hoạch cây đã chín.
 func _harvest() -> void:
-	harvested.emit(crop_id)
+	if crop != null:
+		harvested.emit(crop.id)
+	crop = null
 	_set_state(State.PLAIN)
 
 
@@ -133,11 +131,7 @@ func _update_sprite() -> void:
 	soil_sprite.texture = plain_texture if state == State.PLAIN else tilled_texture
 
 	# Cây: chỉ hiện từ lúc gieo hạt, đè lên nền đất.
-	crop_sprite.texture = _stage_texture(STAGE_INDEX.get(state, -1))
-
-
-## Lấy texture của giai đoạn cây. Trả về null nếu không có giai đoạn đó.
-func _stage_texture(index: int) -> Texture2D:
-	if index < 0 or index >= stage_textures.size():
-		return null
-	return stage_textures[index]
+	if crop == null or not STAGE_INDEX.has(state):
+		crop_sprite.texture = null
+		return
+	crop_sprite.texture = crop.stage_textures[STAGE_INDEX[state]]

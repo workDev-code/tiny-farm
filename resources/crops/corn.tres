@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/crop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cjrkqha3jv7rd" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/corn_stage1.png" id="2_s1"]
+[ext_resource type="Texture2D" uid="uid://dr6o83q0id6v4" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/corn_stage2.png" id="3_s2"]
+[ext_resource type="Texture2D" uid="uid://b858c0rpj1sv8" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/corn_stage3.png" id="4_s3"]
+[ext_resource type="Texture2D" uid="uid://b0oj32itexkai" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/corn_stage4.png" id="5_s4"]
+
+[resource]
+script = ExtResource("1_script")
+id = 1
+display_name = "Ngô"
+seed_price = 25
+sell_price = 90
+grow_time = 15.0
+stage_textures = Array[Texture2D]([ExtResource("2_s1"), ExtResource("3_s2"), ExtResource("4_s3"), ExtResource("5_s4")])

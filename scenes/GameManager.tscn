@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_gm"]
+[ext_resource type="Resource" path="res://resources/crops/carrot.tres" id="2_carrot"]
+[ext_resource type="Resource" path="res://resources/crops/corn.tres" id="3_corn"]
+
+[node name="GameManager" type="Node"]
+script = ExtResource("1_gm")
+crops = Array[CropData]([ExtResource("2_carrot"), ExtResource("3_corn")])

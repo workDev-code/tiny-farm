@@ -1,12 +1,8 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" uid="uid://ceyuwhdtxthjd" path="res://scripts/crop_plot.gd" id="1_plot"]
 [ext_resource type="Texture2D" uid="uid://b0oxhf3tdniop" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/soil/soil_plain_dry.png" id="2_plain"]
 [ext_resource type="Texture2D" uid="uid://bah28a7bq5l6i" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/soil/soil_tilled_dry.png" id="3_tilled"]
-[ext_resource type="Texture2D" uid="uid://wlct7nl0mwfw" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage1.png" id="4_stage1"]
-[ext_resource type="Texture2D" uid="uid://d0gakt13lnub1" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage2.png" id="5_stage2"]
-[ext_resource type="Texture2D" uid="uid://cdm7yfejr737n" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage3.png" id="6_stage3"]
-[ext_resource type="Texture2D" uid="uid://euuixotmo0jk" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage4.png" id="7_stage4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plot"]
 size = Vector2(16, 16)
@@ -16,7 +12,6 @@ scale = Vector2(4, 4)
 script = ExtResource("1_plot")
 plain_texture = ExtResource("2_plain")
 tilled_texture = ExtResource("3_tilled")
-stage_textures = Array[Texture2D]([ExtResource("4_stage1"), ExtResource("5_stage2"), ExtResource("6_stage3"), ExtResource("7_stage4")])
 
 [node name="Soil" type="Sprite2D" parent="."]
 

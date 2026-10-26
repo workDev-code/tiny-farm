@@ -12,17 +12,23 @@
 
 ## Cây trồng
 
-### Cà rốt (loại cây duy nhất ở Phase 2)
+Hai loại cây, dữ liệu nằm trong `resources/crops/*.tres`:
 
-| Giai đoạn | State | Thời gian | Texture |
-| --- | --- | --- | --- |
-| Vừa gieo | `SEED` | 0 – 2s | `crops/carrot_stage1.png` |
-| Nảy mầm | `SPROUT` | 2 – 4s | `crops/carrot_stage2.png` |
-| Đang lớn | `GROWING` | 4 – 6s | `crops/carrot_stage3.png` |
-| Đã chín | `MATURE` | từ 6s | `crops/carrot_stage4.png` |
+| Cây | Hạt giống | Giá bán | Thời gian lớn | Mỗi giai đoạn |
+| --- | --- | --- | --- | --- |
+| Cà rốt | 10 xu | 30 xu | 6s | 1.5s |
+| Ngô | 25 xu | 90 xu | 15s | 3.75s |
 
-Tổng thời gian từ gieo hạt tới chín: **6 giây** (3 giai đoạn × 2 giây).
-Thời gian nằm ở biến export `grow_time_per_stage` trên `CropPlot.tscn`.
+Cà rốt hòa vốn nhanh, ngô lời hơn nhưng phải chờ lâu hơn và cần vốn lớn hơn.
+
+### 4 giai đoạn
+
+| Giai đoạn | State | Texture |
+| --- | --- | --- |
+| Vừa gieo | `SEED` | `stage_textures[0]` |
+| Nảy mầm | `SPROUT` | `stage_textures[1]` |
+| Đang lớn | `GROWING` | `stage_textures[2]` |
+| Đã chín | `MATURE` | `stage_textures[3]` |
 
 ### Lưới ô đất
 
@@ -34,14 +40,35 @@ mỗi ô có `GrowTimer` riêng nên cây ở các ô chín khác nhau theo th�
 | Trạng thái ô đất | Bấm chuột trái | Kết quả |
 | --- | --- | --- |
 | `PLAIN` | Cày đất | → `TILLED` |
-| `TILLED` | Gieo hạt | → `SEED`, bật `GrowTimer` |
+| `TILLED` | Gieo hạt | Trừ 1 hạt giống đang chọn → `SEED`, bật `GrowTimer` |
 | `SEED` / `SPROUT` / `GROWING` | Không làm gì | Giữ nguyên state |
-| `MATURE` | Thu hoạch | → `PLAIN`, phát `harvested`, kho +1 |
+| `MATURE` | Thu hoạch | → `PLAIN`, nông sản vào kho |
 
 ## Kinh tế
 
-_(chưa có — thuộc Phase 03)_
+### Bắt đầu
 
-Hiện tại chỉ có bộ đếm `inventory` trong `main.gd` để chứng minh vòng lặp thu hoạch chạy đúng.
-Chưa có tiền, chưa có hạt giống, chưa có cửa hàng.
+- Tiền: **100 xu**
+- Hạt giống: sẵn **2 hạt cà rốt**, loại cà rốt được chọn sẵn.
+
+### Thanh hạt giống (dưới màn hình)
+
+| Nút | Tác dụng |
+| --- | --- |
+| `Cà rốt ×2` | Chọn loại hạt giống sẽ được trồng. Ô đang chọn hiện màu vàng |
+| `+10 xu` | Mua 1 hạt giống cà rốt. Mua xong loại đó được chọn luôn |
+| `Ngô ×0` / `+25 xu` | Tương tự cho ngô |
+
+### Kinh tế
+
+| Hành động | Kết quả |
+| --- | --- |
+| Mua hạt giống | Trừ tiền, cộng 1 hạt giống |
+| Gieo hạt | Trừ 1 hạt giống đang chọn |
+| Thu hoạch | Nông sản vào kho |
+| `Bán hàng (+N xu)` | Bán toàn bộ nông sản trong kho, cộng tiền |
+| `Nâng cấp (N xu)` | Mua tốc độ mọc: mỗi lần +20%, giá nhân dần, tối đa 3 lần |
+
+Nâng cấp là "đầu tư phát triển trang trại": tiền nằm trong kho không sinh lời,
+bán nông sản rồi nâng cấp mới tăng được tốc độ.
 

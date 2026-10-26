@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/crop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://wlct7nl0mwfw" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage1.png" id="2_s1"]
+[ext_resource type="Texture2D" uid="uid://d0gakt13lnub1" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage2.png" id="3_s2"]
+[ext_resource type="Texture2D" uid="uid://cdm7yfejr737n" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage3.png" id="4_s3"]
+[ext_resource type="Texture2D" uid="uid://euuixotmo0jk" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage4.png" id="5_s4"]
+
+[resource]
+script = ExtResource("1_script")
+id = 0
+display_name = "Cà rốt"
+seed_price = 10
+sell_price = 30
+grow_time = 6.0
+stage_textures = Array[Texture2D]([ExtResource("2_s1"), ExtResource("3_s2"), ExtResource("4_s3"), ExtResource("5_s4")])

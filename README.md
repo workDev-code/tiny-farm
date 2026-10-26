@@ -31,6 +31,18 @@ Clone repo rồi làm theo [`docs/assets.md`](docs/assets.md) để tải và đ
 | --- | --- |
 | Pixel Top-down Farm Tileset (16×16) | <https://reodesuxz.itch.io/free-pixel-top-down-farm-tileset-16x16> |
 
+## Chơi
+
+```bash
+godot --path .
+```
+
+1. Chọn loại hạt giống ở thanh dưới màn hình (nút vàng = đang chọn).
+2. Mua thêm hạt giống nếu cần (nút `+10 xu` / `+25 xu`).
+3. Bấm vào ô đất để cày, bấm lần nữa để gieo hạt.
+4. Đợi cây chín, bấm để thu hoạch.
+5. Bấm `Bán hàng` để đổi nông sản lấy tiền, rồi `Nâng cấp` để cây mọc nhanh hơn.
+
 ## Kiểm thử
 
 ```bash
