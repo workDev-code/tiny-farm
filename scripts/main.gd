@@ -5,8 +5,15 @@ extends Node2D
 ## Main đóng vai trò điều phối: nhận tín hiệu từ ô đất, hỏi `GameManager` lấy hạt giống,
 ## rồi bảo ô đất trồng. Main không tự lưu tiền hay hạt giống.
 
+## Bao lâu giữa 2 lần vẽ lại dòng thông báo (giây).
+const STATUS_REFRESH := 0.25
+
 @onready var ui: GameUI = $UI
 @onready var plots: Node2D = $Farm/Plots
+
+## Ô đất vừa được thao tác — dùng để hiển thị đồng hồ đếm ngược.
+var _last_plot: CropPlot = null
+var _refresh_timer := 0.0
 
 
 func _ready() -> void:
@@ -21,7 +28,19 @@ func _ready() -> void:
 	ui.set_status("Ô đất: trống — bấm chuột trái để cày")
 
 
+func _process(delta: float) -> void:
+	# Làm mới dòng thông báo để đồng hồ đếm ngược chạy.
+	if _last_plot == null:
+		return
+	_refresh_timer += delta
+	if _refresh_timer < STATUS_REFRESH:
+		return
+	_refresh_timer = 0.0
+	ui.set_status(_status_text(_last_plot.state, _last_plot))
+
+
 func _on_plot_state_changed(state: int, plot: CropPlot) -> void:
+	_last_plot = plot
 	ui.set_status(_status_text(state, plot))
 
 
@@ -29,11 +48,12 @@ func _on_plot_state_changed(state: int, plot: CropPlot) -> void:
 func _on_plot_plant_requested(plot: CropPlot) -> void:
 	var crop := GameManager.take_selected_seed()
 	if crop == null:
-		# GameManager đã phát thông báo lý do lên UI.
+		# Không đủ hạt giống — hiện lý do ngay trên dòng trạng thái.
+		ui.set_status(_status_text(plot.state, plot))
 		return
 
 	plot.plant(crop, GameManager.growth_speed)
-	ui.set_status("%s: vừa gieo hạt %s — đang nảy mầm…" % [_plot_label(plot), crop.display_name])
+	ui.set_status(_status_text(plot.state, plot))
 
 
 func _on_plot_harvested(crop_id: int) -> void:
@@ -49,16 +69,31 @@ func _status_text(state: int, plot: CropPlot) -> String:
 		CropPlot.State.PLAIN:
 			return "%s: trống — bấm chuột trái để cày" % where
 		CropPlot.State.TILLED:
-			return "%s: đã cày — bấm chuột trái để gieo hạt" % where
+			return "%s: %s" % [where, _plant_hint()]
 		CropPlot.State.SEED:
-			return "%s: vừa gieo hạt — đang nảy mầm…" % where
+			return "%s: vừa gieo hạt %s (còn %.0fs)" % [where, _crop_name(plot), plot.time_to_mature()]
 		CropPlot.State.SPROUT:
-			return "%s: cây đang nảy mầm…" % where
+			return "%s: cây đang nảy mầm (còn %.0fs)" % [where, plot.time_to_mature()]
 		CropPlot.State.GROWING:
-			return "%s: cây đang lớn…" % where
+			return "%s: cây đang lớn (còn %.0fs)" % [where, plot.time_to_mature()]
 		CropPlot.State.MATURE:
 			return "%s: cây chín rồi — bấm chuột trái để thu hoạch" % where
 	return where
+
+
+## Gợi ý cho người chơi biết sẽ gieo hạt gì và còn bao nhiêu hạt.
+func _plant_hint() -> String:
+	var crop := GameManager.get_crop(GameManager.selected_crop_id)
+	if crop == null:
+		return "đã cày — hãy chọn loại hạt giống ở thanh dưới màn hình"
+	var count: int = GameManager.seeds[GameManager.selected_crop_id]
+	if count <= 0:
+		return "đã cày — chưa có hạt %s, hãy mua ở thanh dưới màn hình" % crop.display_name
+	return "đã cày — bấm chuột trái để gieo hạt %s (còn %d hạt)" % [crop.display_name, count]
+
+
+func _crop_name(plot: CropPlot) -> String:
+	return plot.crop.display_name if plot.crop != null else ""
 
 
 func _plot_label(plot: CropPlot) -> String:

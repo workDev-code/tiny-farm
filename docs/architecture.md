@@ -114,6 +114,16 @@ Người chơi thu hoạch
   → CropPlot.harvested.emit(crop_id) → Main._on_plot_harvested() → tăng kho
 ```
 
+### Dòng thông báo và đồng hồ đếm ngược
+
+`main.gd` giữ `_last_plot` (ô vừa thao tác) và `_process()` làm mới dòng Status mỗi 0,25s,
+nên đồng hồ đếm ngược chạy real-time mà không cần signal mỗi frame.
+
+`CropPlot.time_to_mature()` tính số giây còn lại:
+```
+còn lại = time_left (tới giai đoạn kế) + (so nhip con lai - 1) * wait_time
+```
+
 ### Quy ước
 
 | Quy ước | Lý do |

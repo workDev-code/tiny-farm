@@ -57,6 +57,16 @@ func _ready() -> void:
 	_update_sprite()
 
 
+## Số giây còn lại cho tới khi cây chín.
+## Dùng để hiển thị đồng hồ đếm ngược trên UI.
+func time_to_mature() -> float:
+	if crop == null or not STAGE_INDEX.has(state):
+		return 0.0
+	# Tu giai doan hien tai toi MATURE con it nhip timer nua.
+	var transitions: int = 3 - int(STAGE_INDEX[state])
+	return grow_timer.time_left + float(maxi(transitions - 1, 0)) * grow_timer.wait_time
+
+
 ## Trồng một loại cây lên ô đất.
 ## `speed` là hệ số tốc độ mọc (>1 = nhanh hơn).
 func plant(new_crop: CropData, speed: float = 1.0) -> void:

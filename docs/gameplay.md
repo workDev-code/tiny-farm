@@ -44,6 +44,29 @@ mỗi ô có `GrowTimer` riêng nên cây ở các ô chín khác nhau theo th�
 | `SEED` / `SPROUT` / `GROWING` | Không làm gì | Giữ nguyên state |
 | `MATURE` | Thu hoạch | → `PLAIN`, nông sản vào kho |
 
+### Dòng thông báo (Status)
+
+Dòng trạng thái luôn nói rõ đang xảy ra gì, kể cả khi thao tác thất bại:
+
+| Tình huống | Hiển thị |
+| --- | --- |
+| Ô trống | `Ô đất 5: trống — bấm chuột trái để cày` |
+| Đã cày, có hạt | `Ô đất 5: đã cày — bấm chuột trái để gieo hạt Ngô (còn 1 hạt)` |
+| Đã cày, **hết hạt** | `Ô đất 5: đã cày — chưa có hạt Ngô, hãy mua ở thanh dưới màn hình` |
+| Đang lớn | `Ô đất 5: cây đang lớn (còn 3s)` |
+| Đã chín | `Ô đất 5: cây chín rồi — bấm chuột trái để thu hoạch` |
+
+Dòng này được làm mới mỗi 0,25s nên **đồng hồ đếm ngược chạy real-time**.
+
+### Gợi ý trực quan trên HUD
+
+| Nút | Trạng thái | Ý nghĩa |
+| --- | --- | --- |
+| Nút chọn cây (`Cà rốt ×2`) | Sáng vàng | Loại đang được chọn để trồng |
+| | Tooltip khi rê chuột | `Cà rốt — lớn trong 6s, bán được 30 xu` |
+| Nút mua (`+25 xu`) | Mờ đi | Không đủ tiền |
+| | Sáng xanh | Loại đang chọn đã hết hạt → cần mua |
+
 ## Kinh tế
 
 ### Bắt đầu

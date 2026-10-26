@@ -90,6 +90,10 @@ func _update_select_button(button: SeedButton) -> void:
 		button.text = "?"
 		return
 	button.text = "%s ×%d" % [crop.display_name, GameManager.seeds[button.crop_id]]
+	# Tooltip giải thích cây này: lớn bao lâu, bán được bao nhiêu.
+	button.tooltip_text = "%s — lớn trong %ds, bán được %d xu" % [
+		crop.display_name, int(crop.grow_time), crop.sell_price
+	]
 	# Ô đang được chọn sẽ sáng lên.
 	if GameManager.selected_crop_id == button.crop_id:
 		button.modulate = Color(1.0, 1.0, 0.55)
@@ -103,6 +107,15 @@ func _update_buy_button(button: SeedButton) -> void:
 		button.text = "?"
 		return
 	button.text = "+%d xu" % crop.seed_price
+	button.tooltip_text = "Mua 1 hạt giống %s" % crop.display_name
+	# Không đủ tiền thì làm nút mờ đi để thấy ngay không mua được.
+	button.disabled = GameManager.money < crop.seed_price
+	# Đang chọn loại cây mà đã hết hạt -> nháy nút mua để gợi ý.
+	var selected := GameManager.selected_crop_id == button.crop_id
+	if selected and GameManager.seeds[button.crop_id] <= 0:
+		button.modulate = Color(0.6, 1.0, 0.6)
+	else:
+		button.modulate = Color.WHITE
 
 
 func _inventory_text() -> String:
