@@ -31,6 +31,14 @@ Clone repo rồi làm theo [`docs/assets.md`](docs/assets.md) để tải và đ
 | --- | --- |
 | Pixel Top-down Farm Tileset (16×16) | <https://reodesuxz.itch.io/free-pixel-top-down-farm-tileset-16x16> |
 
+## Kiểm thử
+
+```bash
+godot --path . --script tests/test_crop_plot_loop.gd
+```
+
+Chạy vòng đời ô đất (cày → gieo → lớn → chín → thu hoạch) và in PASS/FAIL cho từng bước.
+
 ## Export
 
 Bấm **Project → Export** trong editor, chọn preset Linux, xuất ra `build/`.

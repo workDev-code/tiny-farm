@@ -1,13 +1,14 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="Script" path="res://scripts/crop_plot.gd" id="2_plot"]
+[ext_resource type="Script" uid="uid://c7anenxndf8jn" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/CropPlot.tscn" id="2_cropplot"]
 [ext_resource type="Texture2D" uid="uid://qw3jj5s1ugvb" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/ground/grass_1.png" id="3_grass"]
 [ext_resource type="Texture2D" uid="uid://b0oxhf3tdniop" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/soil/soil_plain_dry.png" id="4_plain"]
 [ext_resource type="Texture2D" uid="uid://bah28a7bq5l6i" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/soil/soil_tilled_dry.png" id="5_tilled"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_plot"]
-size = Vector2(16, 16)
+[ext_resource type="Texture2D" uid="uid://wlct7nl0mwfw" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage1.png" id="6_stage1"]
+[ext_resource type="Texture2D" uid="uid://d0gakt13lnub1" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage2.png" id="7_stage2"]
+[ext_resource type="Texture2D" uid="uid://cdm7yfejr737n" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage3.png" id="8_stage3"]
+[ext_resource type="Texture2D" uid="uid://euuixotmo0jk" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/crops/carrot_stage4.png" id="9_stage4"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -15,24 +16,17 @@ script = ExtResource("1_main")
 [node name="Background" type="Sprite2D" parent="."]
 texture_repeat = 2
 texture = ExtResource("3_grass")
+centered = false
 region_enabled = true
 region_rect = Rect2(0, 0, 640, 360)
-centered = false
 
 [node name="Farm" type="Node2D" parent="."]
 
-[node name="Plot" type="Area2D" parent="Farm"]
+[node name="Plot" parent="Farm" instance=ExtResource("2_cropplot")]
 position = Vector2(320, 180)
-scale = Vector2(4, 4)
-script = ExtResource("2_plot")
 plain_texture = ExtResource("4_plain")
 tilled_texture = ExtResource("5_tilled")
-
-[node name="Sprite" type="Sprite2D" parent="Farm/Plot"]
-texture = ExtResource("4_plain")
-
-[node name="Shape" type="CollisionShape2D" parent="Farm/Plot"]
-shape = SubResource("RectangleShape2D_plot")
+stage_textures = Array[Texture2D]([ExtResource("6_stage1"), ExtResource("7_stage2"), ExtResource("8_stage3"), ExtResource("9_stage4")])
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -43,3 +37,11 @@ offset_right = 400.0
 offset_bottom = 24.0
 theme_override_font_sizes/font_size = 8
 text = "Ô đất: trống — bấm chuột trái để cày"
+
+[node name="Inventory" type="Label" parent="UI"]
+offset_left = 8.0
+offset_top = 24.0
+offset_right = 400.0
+offset_bottom = 40.0
+theme_override_font_sizes/font_size = 8
+text = "Đã thu hoạch: 0 cà rốt"

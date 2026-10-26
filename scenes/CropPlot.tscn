@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" uid="uid://ceyuwhdtxthjd" path="res://scripts/crop_plot.gd" id="1_plot"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plot"]
+size = Vector2(16, 16)
+
+[node name="CropPlot" type="Area2D"]
+scale = Vector2(4, 4)
+script = ExtResource("1_plot")
+
+[node name="Soil" type="Sprite2D" parent="."]
+
+[node name="Crop" type="Sprite2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_plot")
+
+[node name="GrowTimer" type="Timer" parent="."]
+wait_time = 2.0
