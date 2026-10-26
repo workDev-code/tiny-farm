@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/crop_plot.gd" id="2_plot"]
+[ext_resource type="Texture2D" uid="uid://qw3jj5s1ugvb" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/ground/grass_1.png" id="3_grass"]
+[ext_resource type="Texture2D" uid="uid://b0oxhf3tdniop" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/soil/soil_plain_dry.png" id="4_plain"]
+[ext_resource type="Texture2D" uid="uid://bah28a7bq5l6i" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/soil/soil_tilled_dry.png" id="5_tilled"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plot"]
+size = Vector2(16, 16)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Background" type="Sprite2D" parent="."]
+texture_repeat = 2
+texture = ExtResource("3_grass")
+region_enabled = true
+region_rect = Rect2(0, 0, 640, 360)
+centered = false
+
+[node name="Farm" type="Node2D" parent="."]
+
+[node name="Plot" type="Area2D" parent="Farm"]
+position = Vector2(320, 180)
+scale = Vector2(4, 4)
+script = ExtResource("2_plot")
+plain_texture = ExtResource("4_plain")
+tilled_texture = ExtResource("5_tilled")
+
+[node name="Sprite" type="Sprite2D" parent="Farm/Plot"]
+texture = ExtResource("4_plain")
+
+[node name="Shape" type="CollisionShape2D" parent="Farm/Plot"]
+shape = SubResource("RectangleShape2D_plot")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Status" type="Label" parent="UI"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 400.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 8
+text = "Ô đất: trống — bấm chuột trái để cày"
