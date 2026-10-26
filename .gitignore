@@ -1,0 +1,19 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Build / export artifacts
+/build/
+/export/
+*.tmp
+*.log
+
+# Export credentials (máy local, không commit)
+export_credentials.cfg
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup file
+*.bak
