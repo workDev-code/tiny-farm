@@ -16,7 +16,7 @@ Tài liệu này ghi lại nguồn, license và cách cài đặt mọi asset b�
 
 | Mục | Nội dung |
 | --- | --- |
-| Nguồn | _(ghi URL tải về tại đây)_ |
+| Nguồn | <https://reodesuxz.itch.io/free-pixel-top-down-farm-tileset-16x16> |
 | Tác giả | reodesuxz |
 | License | Cho phép dùng thương mại, không cần ghi công; **cấm resell / redistribute / dùng để train AI** |
 | Vị trí trong project | `assets/packs/pixel_farm_tileset_v1.0/` (không commit) |
@@ -25,9 +25,10 @@ Tài liệu này ghi lại nguồn, license và cách cài đặt mọi asset b�
 
 ### Cài đặt
 
-1. Tải lại pack từ nguồn ở trên.
+1. Tải pack ở nguồn trên (nút **Download** trên itch.io — file `.zip`).
 2. Giải nén vào `assets/packs/pixel_farm_tileset_v1.0/` (đúng tên thư mục, giữ nguyên cấu trúc `PNG/native/`).
-3. Godot sẽ tự import các file PNG.
+3. Xoá bản `x4` không cần dùng: `PNG/x4/` và `spritesheet_x4.png` (giữ `spritesheet.png` + `spritesheet.json`).
+4. Godot sẽ tự import các file PNG với thiết lập trong `project.godot`.
 
 ### Cách dùng trong Godot
 

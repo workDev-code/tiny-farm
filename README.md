@@ -27,6 +27,10 @@ godot --path .
 Asset pack **không** được commit vào repo (license cấm redistribute trên repo public).
 Clone repo rồi làm theo [`docs/assets.md`](docs/assets.md) để tải và đặt asset vào `assets/packs/`.
 
+| Pack | Nguồn |
+| --- | --- |
+| Pixel Top-down Farm Tileset (16×16) | <https://reodesuxz.itch.io/free-pixel-top-down-farm-tileset-16x16> |
+
 ## Export
 
 Bấm **Project → Export** trong editor, chọn preset Linux, xuất ra `build/`.
