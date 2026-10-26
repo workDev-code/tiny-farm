@@ -24,6 +24,11 @@
 Tổng thời gian từ gieo hạt tới chín: **6 giây** (3 giai đoạn × 2 giây).
 Thời gian nằm ở biến export `grow_time_per_stage` trên `CropPlot.tscn`.
 
+### Lưới ô đất
+
+Nông trại có **9 ô**, xếp lưới 3×3, mỗi ô độc lập nhau: trồng ô này không ảnh hưởng ô kia,
+mỗi ô có `GrowTimer` riêng nên cây ở các ô chín khác nhau theo thời gian.
+
 ### Hành vi người chơi
 
 | Trạng thái ô đất | Bấm chuột trái | Kết quả |

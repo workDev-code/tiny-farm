@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="PackedScene" path="res://scenes/CropPlot.tscn" id="1_cropplot"]
+[node name="Farm" type="Node2D"]
+[node name="Plots" type="Node2D" parent="."]
+[node name="Plot_1" parent="Plots" instance=ExtResource("1_cropplot")]
+position = Vector2(248, 108)
+[node name="Plot_2" parent="Plots" instance=ExtResource("1_cropplot")]
+position = Vector2(320, 108)
+[node name="Plot_3" parent="Plots" instance=ExtResource("1_cropplot")]
+position = Vector2(392, 108)
+[node name="Plot_4" parent="Plots" instance=ExtResource("1_cropplot")]
+position = Vector2(248, 180)
+[node name="Plot_5" parent="Plots" instance=ExtResource("1_cropplot")]
+position = Vector2(320, 180)
+[node name="Plot_6" parent="Plots" instance=ExtResource("1_cropplot")]
+position = Vector2(392, 180)
+[node name="Plot_7" parent="Plots" instance=ExtResource("1_cropplot")]
+position = Vector2(248, 252)
+[node name="Plot_8" parent="Plots" instance=ExtResource("1_cropplot")]
+position = Vector2(320, 252)
+[node name="Plot_9" parent="Plots" instance=ExtResource("1_cropplot")]
+position = Vector2(392, 252)

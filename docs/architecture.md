@@ -34,16 +34,28 @@ tiny-farm/
 ```
 Main (Node2D)              scripts/main.gd
 ├── Background (Sprite2D)  Nền cỏ lặp theo region 640×360
-├── Farm (Node2D)
-│   └── Plot                ← instance của CropPlot.tscn
-│       ├── Soil (Sprite2D)   Nền đất: plain / tilled
-│       ├── Crop (Sprite2D)   Cây trồng, đè lên Soil
-│       ├── Shape (CollisionShape2D)  Hình chữ nhật 16×16
-│       └── GrowTimer (Timer) wait_time 2.0, one_shot = false
+├── Farm                    ← instance của Farm.tscn
+│   └── Plots (Node2D)
+│       ├── Plot_1 … Plot_9   ← 9 instance của CropPlot.tscn
+│       └── ...
 └── UI (CanvasLayer)
-    ├── Status (Label)     Dòng thông báo trạng thái ô đất
+    ├── Status (Label)     Dòng thông báo trạng thái ô đất vừa thao tác
     └── Inventory (Label)  Số cây đã thu hoạch
 ```
+
+### Lưới 9 ô đất
+
+`Farm.tscn` chứa 9 instance của `CropPlot.tscn`, xếp lưới 3×3.
+Vị trí tính theo ô 64×64 px trên màn hình (16px tile × scale 4), cách nhau 8px:
+
+| | x = 248 | x = 320 | x = 392 |
+| --- | --- | --- | --- |
+| **y = 108** | Plot_1 | Plot_2 | Plot_3 |
+| **y = 180** | Plot_4 | Plot_5 | Plot_6 |
+| **y = 252** | Plot_7 | Plot_8 | Plot_9 |
+
+Texture được đặt **mặc định trong `CropPlot.tscn`**, nên mỗi instance chỉ cần khai báo `position`.
+Muốn ô nào dùng cây khác thì override `stage_textures` của riêng instance đó.
 
 ### `scenes/CropPlot.tscn` — scene tái sử dụng
 
@@ -105,6 +117,8 @@ Người chơi thu hoạch
 | `toggle_state()` → `interact()` | Phase 2 không còn là đảo 2 chiều, mà là hành vi theo state |
 | `class_name CropPlot` | Gọi được `CropPlot.State.PLAIN` từ mọi script |
 | `GrowTimer` nằm trong `CropPlot.tscn` | Mỗi ô lớn độc lập, không cần Main quản lý N timer |
+| `main.gd` duyệt `Farm/Plots` để nối signal | Thêm ô mới chỉ cần thêm instance, không sửa code |
+| `signal.bind(plot)` để biết ô nào đổi | Signal gốc chỉ mang `state`; bind gắn thêm ô đất làm tham số |
 
 ## Quyết định thiết kế
 
