@@ -15,6 +15,9 @@ signal notice(text: String)
 @export var crops: Array[CropData] = []
 ## Số tiền người chơi bắt đầu.
 @export var starting_money: int = 100
+## Số hạt giống khởi đầu cho từng loại cây, theo thứ tự trong `crops`.
+## Ô trống (hoặc thiếu phần tử) nghĩa là loại cây đó không có hạt giống sẵn.
+@export var starting_seeds: Array[int] = [2, 1]
 ## Số lần nâng cấp tối đa.
 @export var max_upgrade_level: int = 3
 ## Giá nâng cấp cấp 1, mỗi lần nâng cấp tiếp theo đắt hơn.
@@ -39,12 +42,11 @@ func _ready() -> void:
 	seeds.resize(crops.size())
 	produce.resize(crops.size())
 	for i in crops.size():
-		seeds[i] = 0
+		seeds[i] = starting_seeds[i] if i < starting_seeds.size() else 0
 		produce[i] = 0
 
-	# Cho sẵn 2 hạt giống đầu tiên để người chơi bắt đầu được ngay.
+	# Chọn sẵn loại cây đầu tiên để người chơi bắt đầu được ngay.
 	if crops.size() > 0:
-		seeds[0] = 2
 		selected_crop_id = 0
 
 	money_changed.emit(money)

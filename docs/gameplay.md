@@ -72,7 +72,10 @@ Dòng này được làm mới mỗi 0,25s nên **đồng hồ đếm ngược c
 ### Bắt đầu
 
 - Tiền: **100 xu**
-- Hạt giống: sẵn **2 hạt cà rốt**, loại cà rốt được chọn sẵn.
+- Hạt giống: sẵn **2 hạt cà rốt + 1 hạt ngô**, loại cà rốt được chọn sẵn.
+
+Cấu hình này nằm ở `GameManager.starting_seeds` (mảng theo thứ tự `crops`),
+muốn đổi thì sửa trong Inspector, không phải sửa code.
 
 ### Thanh hạt giống (dưới màn hình)
 

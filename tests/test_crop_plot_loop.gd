@@ -163,11 +163,13 @@ func _check(label: String, ok: bool) -> void:
 func _click(pos: Vector2) -> void:
 	# Phai gui InputEventMouseMotion truoc: Godot can biet con tro dang o dau
 	# moi xac dinh duoc Control nao duoc bam.
-	var motion := InputEventMouseMotion.new()
-	motion.position = pos
-	motion.global_position = pos
-	root.push_input(motion, true)
-	await _frames(2)
+	# Gui 2 lan: lan dau co the bi GUI bo qua, lam click khong an.
+	for i in 2:
+		var motion := InputEventMouseMotion.new()
+		motion.position = pos
+		motion.global_position = pos
+		root.push_input(motion, true)
+		await _frames(2)
 
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
