@@ -54,6 +54,45 @@ func _ready() -> void:
 	selection_changed.emit(selected_crop_id)
 
 
+## Trả về Dictionary để SaveManager ghi vào file.
+func get_save_data() -> Dictionary:
+	return {
+		"money": money,
+		"seeds": seeds,
+		"produce": produce,
+		"selected_crop_id": selected_crop_id,
+		"upgrade_level": upgrade_level,
+	}
+
+
+## Tải lại từ Dictionary (từ file save).
+func load_from_save(data: Dictionary) -> void:
+	money = int(data.get("money", starting_money))
+	var seeds_data: Variant = data.get("seeds", [])
+	if seeds_data is Array:
+		seeds.clear()
+		seeds.assign(seeds_data)
+
+	var produce_data: Variant = data.get("produce", [])
+	if produce_data is Array:
+		produce.clear()
+		produce.assign(produce_data)
+	selected_crop_id = int(data.get("selected_crop_id", 0))
+	upgrade_level = int(data.get("upgrade_level", 0))
+	growth_speed = 1.0 + float(upgrade_speed_percent * upgrade_level) / 100.0
+
+	# Đảm bảo mảng đúng kích thước
+	seeds.resize(crops.size())
+	produce.resize(crops.size())
+	for i in crops.size():
+		if i >= seeds.size(): seeds[i] = 0
+		if i >= produce.size(): produce[i] = 0
+
+	money_changed.emit(money)
+	inventory_changed.emit()
+	selection_changed.emit(selected_crop_id)
+
+
 ## Lấy dữ liệu cây theo id. Trả về null nếu id không hợp lệ.
 func get_crop(crop_id: int) -> CropData:
 	if crop_id < 0 or crop_id >= crops.size():

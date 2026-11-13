@@ -4,6 +4,9 @@
 [ext_resource type="PackedScene" path="res://scenes/Farm.tscn" id="2_farm"]
 [ext_resource type="PackedScene" path="res://scenes/UI.tscn" id="3_ui"]
 [ext_resource type="Texture2D" uid="uid://qw3jj5s1ugvb" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/ground/grass_1.png" id="4_grass"]
+[ext_resource type="Script" uid="uid://l3ncxawttqsp" path="res://scripts/tool_manager.gd" id="5_tool_manager"]
+[ext_resource type="Script" uid="uid://banc7liq1plqv" path="res://scripts/farming_controller.gd" id="6_farming_controller"]
+[ext_resource type="Script" uid="uid://chietxgt83hfg" path="res://scripts/player_input.gd" id="7_player_input"]
 
 [node name="Main" type="Node2D" unique_id=75402123]
 script = ExtResource("1_main")
@@ -17,5 +20,14 @@ region_enabled = true
 region_rect = Rect2(0, 0, 640, 360)
 
 [node name="Farm" parent="." unique_id=1278457432 instance=ExtResource("2_farm")]
+
+[node name="ToolManager" type="Node" parent="." unique_id=917910501]
+script = ExtResource("5_tool_manager")
+
+[node name="FarmingController" type="Node" parent="." unique_id=862688596]
+script = ExtResource("6_farming_controller")
+
+[node name="PlayerInput" type="Node" parent="." unique_id=993475419]
+script = ExtResource("7_player_input")
 
 [node name="UI" parent="." unique_id=1127442464 instance=ExtResource("3_ui")]

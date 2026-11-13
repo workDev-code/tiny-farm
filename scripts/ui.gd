@@ -15,6 +15,11 @@ extends CanvasLayer
 @onready var buy_carrot_button: SeedButton = $BtnBuyCarrot
 @onready var corn_button: SeedButton = $BtnCorn
 @onready var buy_corn_button: SeedButton = $BtnBuyCorn
+@onready var tool_none_button: Button = $Toolbar/BtnToolNone
+@onready var tool_hoe_button: Button = $Toolbar/BtnToolHoe
+@onready var tool_seed_button: Button = $Toolbar/BtnToolSeed
+
+var tool_manager: Node
 
 
 func _ready() -> void:
@@ -23,14 +28,21 @@ func _ready() -> void:
 	GameManager.selection_changed.connect(_on_selection_changed)
 	GameManager.notice.connect(_on_notice)
 
+	tool_manager = get_parent().get_node_or_null("ToolManager")
 	carrot_button.pressed.connect(_on_seed_button.bind(carrot_button))
 	buy_carrot_button.pressed.connect(_on_seed_button.bind(buy_carrot_button))
 	corn_button.pressed.connect(_on_seed_button.bind(corn_button))
 	buy_corn_button.pressed.connect(_on_seed_button.bind(buy_corn_button))
+	tool_none_button.pressed.connect(_on_tool_button.bind(tool_manager.TOOL_NONE))
+	tool_hoe_button.pressed.connect(_on_tool_button.bind(tool_manager.TOOL_HOE))
+	tool_seed_button.pressed.connect(_on_tool_button.bind(tool_manager.TOOL_SEED))
 	sell_button.pressed.connect(_on_sell_pressed)
 	upgrade_button.pressed.connect(_on_upgrade_pressed)
 
+	if tool_manager != null:
+		tool_manager.tool_changed.connect(_on_tool_selected)
 	_refresh()
+	_refresh_tool_buttons()
 
 
 ## Hiển thị trạng thái ô đất vừa thao tác.
@@ -43,6 +55,16 @@ func _on_seed_button(button: SeedButton) -> void:
 		GameManager.buy_seed(button.crop_id)
 	else:
 		GameManager.select_crop(button.crop_id)
+
+
+func _on_tool_button(tool: int) -> void:
+	if tool_manager != null:
+		tool_manager.set_tool(tool)
+	_refresh_tool_buttons()
+
+
+func _on_tool_selected(_tool: int) -> void:
+	_refresh_tool_buttons()
 
 
 func _on_sell_pressed() -> void:
@@ -73,6 +95,7 @@ func _on_notice(text: String) -> void:
 func _refresh() -> void:
 	money_label.text = "Tiền: %d xu" % GameManager.money
 	inventory_label.text = _inventory_text()
+	_refresh_tool_buttons()
 
 	_update_select_button(carrot_button)
 	_update_select_button(corn_button)
@@ -116,6 +139,17 @@ func _update_buy_button(button: SeedButton) -> void:
 		button.modulate = Color(0.6, 1.0, 0.6)
 	else:
 		button.modulate = Color.WHITE
+
+
+func _refresh_tool_buttons() -> void:
+	if tool_manager == null:
+		return
+	tool_none_button.button_pressed = tool_manager.is_selected(tool_manager.TOOL_NONE)
+	tool_hoe_button.button_pressed = tool_manager.is_selected(tool_manager.TOOL_HOE)
+	tool_seed_button.button_pressed = tool_manager.is_selected(tool_manager.TOOL_SEED)
+	tool_none_button.modulate = Color(1.0, 1.0, 1.0) if tool_manager.is_selected(tool_manager.TOOL_NONE) else Color(0.75, 0.75, 0.75)
+	tool_hoe_button.modulate = Color(1.0, 0.82, 0.35) if tool_manager.is_selected(tool_manager.TOOL_HOE) else Color(1.0, 1.0, 1.0)
+	tool_seed_button.modulate = Color(0.8, 1.0, 0.8) if tool_manager.is_selected(tool_manager.TOOL_SEED) else Color(1.0, 1.0, 1.0)
 
 
 func _inventory_text() -> String:

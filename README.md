@@ -12,6 +12,12 @@ Game Idle/Farming 2D viết bằng **Godot 4.6** + **GDScript**.
 | [`docs/known_issues.md`](docs/known_issues.md) | Lỗi đã biết và hạn chế tạm thời |
 | [`docs/assets.md`](docs/assets.md) | Nguồn, license và cách cài asset bên thứ ba |
 
+## Current reference screenshot
+
+![Tiny Farm current reference screenshot](docs/screenshots/actual_game_reference.png)
+
+Đây là ảnh tham chiếu hiện trạng của project theo layout farm 3x3, HUD, toolbar và asset từ pack gốc. File lưu tại [`docs/screenshots/actual_game_reference.png`](docs/screenshots/actual_game_reference.png).
+
 ## Chạy game
 
 ```bash

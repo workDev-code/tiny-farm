@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui.gd" id="1_ui"]
 [ext_resource type="Script" path="res://scripts/seed_button.gd" id="2_btn"]
+[ext_resource type="Texture2D" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/tools/hoe.png" id="3_hoe"]
 
 [node name="UI" type="CanvasLayer"]
 script = ExtResource("1_ui")
@@ -97,3 +98,27 @@ theme_override_font_sizes/font_size = 8
 text = "+25 xu"
 crop_id = 1
 action = "buy"
+
+[node name="Toolbar" type="HBoxContainer" parent="."]
+offset_left = 288.0
+offset_top = 320.0
+offset_right = 632.0
+offset_bottom = 340.0
+theme_override_constants/separation = 4
+
+[node name="BtnToolNone" type="Button" parent="Toolbar"]
+layout_mode = 2
+toggle_mode = true
+text = "None"
+
+[node name="BtnToolHoe" type="Button" parent="Toolbar"]
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("3_hoe")
+expand_icon = true
+text = "Hoe"
+
+[node name="BtnToolSeed" type="Button" parent="Toolbar"]
+layout_mode = 2
+toggle_mode = true
+text = "Seed"

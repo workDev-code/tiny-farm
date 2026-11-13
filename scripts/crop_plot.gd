@@ -46,6 +46,12 @@ signal harvested(crop_id: int)
 var crop: CropData = null
 var state: State = State.PLAIN
 
+## Approach B: thời gian gieo hạt (unix timestamp). Dùng để tính offline.
+var planted_at := 0.0
+## Tổng thời gian lớn của cây này, được ghi lại chính lúc gieo (không đổi).
+## Không dùng grow_time của CropData hiện tại — vì upgrade có thể thay đổi sau khi gieo.
+var grow_duration := 0.0
+
 
 func _ready() -> void:
 	# input_event chỉ phát ra khi Area2D có "input_pickable" bật (mặc định đã bật).
@@ -55,6 +61,64 @@ func _ready() -> void:
 	grow_timer.timeout.connect(_on_timer_timeout)
 
 	_update_sprite()
+
+
+## Trả về Dictionary để SaveManager ghi vào file (Approach B).
+func get_save_data() -> Dictionary:
+	if crop == null:
+		return {"crop_id": -1}
+	return {
+		"crop_id": int(crop.id),
+		"planted_at": planted_at,
+		"grow_duration": grow_duration,
+	}
+
+
+## Khôi phục từ file save (Approach B): tính state từ thời gian thực tế.
+func load_from_save(data: Dictionary, crops: Array) -> void:
+	var crop_id := int(data.get("crop_id", -1))
+	if crop_id < 0 or crop_id >= crops.size():
+		# Không có cây: ô đất trống.
+		crop = null
+		state = State.PLAIN
+		grow_timer.stop()
+		_update_sprite()
+		return
+
+	crop = crops[crop_id]
+	planted_at = float(data.get("planted_at", 0.0))
+	grow_duration = float(data.get("grow_duration", 0.0))
+	if grow_duration <= 0.0:
+		# Dữ liệu không hợp lệ: coi như mới gieo.
+		planted_at = Time.get_unix_time_from_system()
+		grow_duration = crop.grow_time
+
+	# Approach B: tính state từ thời gian đã trôi.
+	var now := Time.get_unix_time_from_system()
+	var elapsed := now - planted_at
+	var progress := elapsed / maxf(grow_duration, 0.01)
+
+	if progress >= 1.0:
+		# Đã chín từ lâu — giữ nguyên ở MATURE, không tự thu hoạch.
+		state = State.MATURE
+		grow_timer.stop()
+	else:
+		# Chọn giai đoạn: 4 giai đoạn tương ứng SEED..MATURE.
+		var stage_index := int(progress * 4.0)
+		if stage_index < 0:
+			stage_index = 0
+		if stage_index > 3:
+			stage_index = 3
+		# Enum: PLAIN=0, TILLED=1, SEED=2, SPROUT=3, GROWING=4, MATURE=5
+		state = State.SEED + stage_index
+		# Đặt timer để fire đúng lúc kết thúc giai đoạn hiện tại.
+		var stage_time := grow_duration / 4.0
+		var time_in_current := elapsed - stage_index * stage_time
+		grow_timer.wait_time = stage_time - time_in_current
+		grow_timer.start()
+
+	_update_sprite()
+	state_changed.emit(state)
 
 
 ## Số giây còn lại cho tới khi cây chín.
@@ -71,6 +135,10 @@ func time_to_mature() -> float:
 ## `speed` là hệ số tốc độ mọc (>1 = nhanh hơn).
 func plant(new_crop: CropData, speed: float = 1.0) -> void:
 	crop = new_crop
+	# grow_duration = tổng thời gian lớn của cây này, ghi lại ngay lúc gieo.
+	# Không dùng crop.grow_time trực tiếp — phải chia cho speed (nâng cấp).
+	grow_duration = crop.grow_time / maxf(speed, 0.01)
+	planted_at = Time.get_unix_time_from_system()
 	grow_timer.wait_time = crop.time_per_stage() / maxf(speed, 0.01)
 	_set_state(State.SEED)
 	grow_timer.start()
@@ -107,15 +175,38 @@ func _set_state(new_state: State) -> void:
 
 
 ## Cây lớn thêm một giai đoạn mỗi lần Timer hết giờ.
+##
+## Approach B: timer fire là để làm mới state theo thời gian thực, không phải là
+## nguồn sự thật. Khi fire, kiểm tra xem đã tới giai đoạn tiếp theo chưa.
 func _on_timer_timeout() -> void:
-	match state:
-		State.SEED:
-			_set_state(State.SPROUT)
-		State.SPROUT:
-			_set_state(State.GROWING)
-		State.GROWING:
+	var now := Time.get_unix_time_from_system()
+	var elapsed := now - planted_at
+	var progress := elapsed / maxf(grow_duration, 0.01)
+
+	# Nếu đã tới MATURE thì dừng timer, không tự thu hoạch.
+	if progress >= 1.0:
+		if state != State.MATURE:
 			_set_state(State.MATURE)
-			grow_timer.stop()
+		grow_timer.stop()
+		return
+
+	# Tính giai đoạn theo progress, so sánh với state hiện tại.
+	var stage_index := int(progress * 4.0)
+	if stage_index < 0: stage_index = 0
+	if stage_index > 3: stage_index = 3
+	var target_state := State.SEED + stage_index
+
+	if target_state != state:
+		_set_state(target_state)
+
+	# Đặt timer fire lần tiếp theo = kết thúc giai đoạn hiện tại.
+	var stage_time := grow_duration / 4.0
+	var time_in_current := elapsed - stage_index * stage_time
+	var next_fire := stage_time - time_in_current
+	if next_fire < 0.05:
+		next_fire = 0.05
+	grow_timer.wait_time = next_fire
+	grow_timer.start()
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
@@ -123,6 +214,9 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
+			var tool_manager = _get_tool_manager()
+			if tool_manager != null and tool_manager.selected_tool != tool_manager.TOOL_NONE:
+				return
 			interact()
 
 
@@ -134,6 +228,13 @@ func _on_mouse_entered() -> void:
 
 func _on_mouse_exited() -> void:
 	modulate = Color.WHITE
+
+
+func _get_tool_manager():
+	var main := get_tree().get_root().get_node_or_null("Main")
+	if main == null:
+		return null
+	return main.get_node_or_null("ToolManager")
 
 
 func _update_sprite() -> void:

@@ -1,0 +1,20 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^godot --headless --path \\. --script tests/test_feature_01_tool_selection\\.gd$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^printf 'godot=%s\\\\n' \"\\$\\(which godot \\|\\| echo missing\\)\" && printf 'xvfb-run=%s\\\\n' \"\\$\\(which xvfb-run \\|\\| echo missing\\)\" && printf 'import=%s\\\\n' \"\\$\\(which import \\|\\| echo missing\\)\" && printf 'gnome-screenshot=%s\\\\n' \"\\$\\(which gnome-screenshot \\|\\| echo missing\\)\" && printf 'scrot=%s\\\\n' \"\\$\\(which scrot \\|\\| echo missing\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^printf 'Xvfb=%s\\\\n' \"\\$\\(which Xvfb \\|\\| echo missing\\)\" && printf 'xwd=%s\\\\n' \"\\$\\(which xwd \\|\\| echo missing\\)\" && printf 'xdpyinfo=%s\\\\n' \"\\$\\(which xdpyinfo \\|\\| echo missing\\)\" && printf 'convert=%s\\\\n' \"\\$\\(which convert \\|\\| echo missing\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^godot --help 2>&1 \\| head -n 120$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

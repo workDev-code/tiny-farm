@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" uid="uid://ceyuwhdtxthjd" path="res://scripts/crop_plot.gd" id="1_plot"]
 [ext_resource type="Texture2D" uid="uid://b0oxhf3tdniop" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/soil/soil_plain_dry.png" id="2_plain"]
 [ext_resource type="Texture2D" uid="uid://bah28a7bq5l6i" path="res://assets/packs/pixel_farm_tileset_v1.0/PNG/native/soil/soil_tilled_dry.png" id="3_tilled"]
+[ext_resource type="Script" path="res://scripts/farm_tile.gd" id="4_farm_tile"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plot"]
 size = Vector2(16, 16)
@@ -22,3 +23,8 @@ shape = SubResource("RectangleShape2D_plot")
 
 [node name="GrowTimer" type="Timer" parent="."]
 wait_time = 2.0
+
+[node name="FarmTile" type="Node" parent="."]
+script = ExtResource("4_farm_tile")
+plain_texture = ExtResource("2_plain")
+tilled_texture = ExtResource("3_tilled")
